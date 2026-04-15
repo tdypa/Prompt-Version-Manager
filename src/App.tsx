@@ -152,11 +152,7 @@ export default function App(): ReactElement {
         description: promptSetForm.description.trim(),
         tags,
       };
-      await window.pvmApi.updatePromptSet(payload.id, {
-        title: payload.title,
-        description: payload.description,
-        tags: payload.tags,
-      });
+      await window.pvmApi.updatePromptSet(payload);
       setStatus("项目已更新");
     }
     setPromptSetMode(null);
@@ -250,7 +246,7 @@ export default function App(): ReactElement {
       setStatus("请先选择一个版本");
       return;
     }
-    const added = await window.pvmApi.addAttachments(selectedVersionId);
+    const added = await window.pvmApi.importAttachments(selectedVersionId);
     if (added.length === 0) {
       setStatus("未导入附件");
       return;
@@ -263,7 +259,7 @@ export default function App(): ReactElement {
 
   async function removeAttachment(attachmentId: string): Promise<void> {
     if (!selectedPromptSetId) return;
-    await window.pvmApi.removeAttachment(attachmentId);
+    await window.pvmApi.deleteAttachment(attachmentId);
     setStatus("附件已删除");
     await loadVersions(selectedPromptSetId);
   }
@@ -291,7 +287,7 @@ export default function App(): ReactElement {
       setStatus("请先选择一个版本");
       return;
     }
-    const result = await window.pvmApi.exportVersionPackage(selectedVersionId, mode);
+    const result = await window.pvmApi.exportVersion(selectedVersionId, mode);
     if (!result) {
       setStatus("已取消导出");
       return;
