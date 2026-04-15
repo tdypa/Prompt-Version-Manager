@@ -1,0 +1,42 @@
+{
+  "name": "prompt-version-manager",
+  "version": "1.0.0",
+  "description": "Desktop prompt version management MVP built with Electron, React and SQLite.",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:renderer\" \"npm run dev:electron\"",
+    "dev:renderer": "vite",
+    "dev:electron": "wait-on tcp:5173 && VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .",
+    "build": "vite build",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tdypa/Prompt-Version-Manager.git"
+  },
+  "keywords": [],
+  "author": "Cursor Cloud Agent",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tdypa/Prompt-Version-Manager/issues"
+  },
+  "homepage": "https://github.com/tdypa/Prompt-Version-Manager#readme",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "better-sqlite3": "^12.9.0",
+    "electron": "^41.2.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8",
+    "wait-on": "^9.0.5"
+  }
+}
