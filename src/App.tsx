@@ -258,10 +258,16 @@ export default function App() {
       return;
     }
 
-    const response = await window.promptManagerApi.exportVersion({
-      versionId: selectedVersion.id,
-      format,
-    });
+    let response;
+    try {
+      response = await window.promptManagerApi.exportVersion({
+        versionId: selectedVersion.id,
+        format,
+      });
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? `导出失败：${error.message}` : '导出失败。');
+      return;
+    }
 
     if (response.cancelled) {
       setStatusMessage('已取消导出。');

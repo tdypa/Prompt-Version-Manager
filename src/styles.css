@@ -75,7 +75,6 @@ textarea {
   background: rgba(10, 17, 32, 0.72);
   border: 1px solid rgba(170, 190, 220, 0.12);
   box-shadow: 0 24px 80px rgba(2, 6, 23, 0.28);
-  backdrop-filter: blur(18px);
 }
 
 .topbar {

@@ -74,6 +74,13 @@ export interface PromptManagerApi {
   exportVersion: (payload: { versionId: number; format: 'folder' | 'zip' }) => Promise<{ cancelled: boolean; exportPath?: string }>;
   addAttachments: (payload: { versionId: number; category: AttachmentCategory }) => Promise<{ cancelled: boolean }>;
   removeAttachment: (attachmentId: number) => Promise<{ ok: boolean }>;
+  writeDebugLog: (payload: {
+    hypothesisId: string;
+    location: string;
+    message: string;
+    data?: Record<string, unknown>;
+    timestamp: number;
+  }) => Promise<{ ok: boolean }>;
 }
 
 declare global {
