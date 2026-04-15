@@ -3,20 +3,6 @@ const os = require('node:os');
 const path = require('node:path');
 const Database = require('better-sqlite3');
 const archiver = require('archiver');
-const debugLogPath = '/opt/cursor/logs/debug.log';
-
-// #region agent log
-function debugLog(hypothesisId, location, message, data = {}) {
-  fs.appendFileSync(debugLogPath, `${JSON.stringify({
-    hypothesisId,
-    location,
-    message,
-    data,
-    timestamp: Date.now(),
-  })}\n`);
-}
-// #endregion
-
 function nowIso() {
   return new Date().toISOString();
 }
@@ -50,28 +36,8 @@ function createZipFromDirectory(sourceDir, outputPath) {
     const output = fs.createWriteStream(outputPath);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
-    // #region agent log
-    debugLog('B', 'electron/database.cjs:createZipFromDirectory', 'Starting zip stream', {
-      sourceDir,
-      outputPath,
-    });
-    // #endregion
     output.on('close', () => resolve(outputPath));
-    // #region agent log
-    output.on('error', (error) => {
-      debugLog('B', 'electron/database.cjs:createZipFromDirectory', 'Zip output stream error', {
-        outputPath,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      reject(error);
-    });
-    archive.on('warning', (error) => {
-      debugLog('B', 'electron/database.cjs:createZipFromDirectory', 'Zip archiver warning', {
-        outputPath,
-        error: error instanceof Error ? error.message : String(error),
-      });
-    });
-    // #endregion
+    output.on('error', reject);
     archive.on('error', reject);
     archive.pipe(output);
     archive.directory(sourceDir, false);
@@ -516,15 +482,6 @@ function initializeDatabase({ dbPath, assetsRoot }) {
     const version = getVersion(versionId);
     const folderName = sanitizeFileName(`${version.projectTitle}_${version.name}_${version.createdAt.replace(/[:.]/g, '-')}`);
 
-    // #region agent log
-    debugLog('B', 'electron/database.cjs:exportVersion', 'Preparing export bundle', {
-      versionId,
-      format,
-      destinationPath,
-      folderName,
-    });
-    // #endregion
-
     if (format === 'folder') {
       const exportDir = path.join(destinationPath, folderName);
       writeExportBundle(versionId, exportDir);
@@ -535,13 +492,6 @@ function initializeDatabase({ dbPath, assetsRoot }) {
     ensureDir(tempDir);
     writeExportBundle(versionId, tempDir);
     await createZipFromDirectory(tempDir, destinationPath);
-    // #region agent log
-    debugLog('B', 'electron/database.cjs:exportVersion', 'Zip file created', {
-      versionId,
-      destinationPath,
-      tempDir,
-    });
-    // #endregion
     removePath(path.dirname(tempDir));
     return destinationPath;
   }

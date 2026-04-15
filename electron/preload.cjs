@@ -14,5 +14,4 @@ contextBridge.exposeInMainWorld('promptManagerApi', {
   exportVersion: (payload) => ipcRenderer.invoke('versions:export', payload),
   addAttachments: (payload) => ipcRenderer.invoke('attachments:add', payload),
   removeAttachment: (attachmentId) => ipcRenderer.invoke('attachments:remove', attachmentId),
-  writeDebugLog: (payload) => ipcRenderer.invoke('debug:log', payload),
 });

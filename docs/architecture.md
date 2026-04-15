@@ -134,7 +134,7 @@ Prompt Version Manager 是一个本地优先的桌面端提示词管理工具，
 ## 4. 本地文件策略
 
 - SQLite 文件位于 Electron `userData` 目录下。
-- 附件统一复制到 `userData/assets/<projectId>/<versionId>/`。
+- 附件统一复制到 `userData/assets/<projectId>/<versionId>/`，导出时再按图片/文档/视频分类整理。
 - 导出版本时生成：
   - `prompt.md`
   - `metadata.json`

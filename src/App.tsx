@@ -317,7 +317,7 @@ export default function App() {
             onChange={(event) => setSearch(event.target.value)}
           />
           <button className="primary-button" onClick={() => void handleCreateProject()}>
-            新建提示词
+            新建项目
           </button>
         </div>
       </header>

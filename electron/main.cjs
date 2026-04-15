@@ -1,25 +1,11 @@
 const path = require('node:path');
-const fs = require('node:fs');
 const { app, BrowserWindow, clipboard, dialog, ipcMain } = require('electron');
 const { initializeDatabase } = require('./database.cjs');
 
 const isDev = Boolean(process.env.VITE_DEV_SERVER_URL);
-const debugLogPath = '/opt/cursor/logs/debug.log';
 
 let mainWindow;
 let database;
-
-// #region agent log
-function debugLog(hypothesisId, location, message, data = {}) {
-  fs.appendFileSync(debugLogPath, `${JSON.stringify({
-    hypothesisId,
-    location,
-    message,
-    data,
-    timestamp: Date.now(),
-  })}\n`);
-}
-// #endregion
 
 function getFileFilters(category) {
   if (category === 'image') {
@@ -50,27 +36,6 @@ async function createWindow() {
     },
   });
 
-  // #region agent log
-  debugLog('A', 'electron/main.cjs:createWindow', 'BrowserWindow created', {
-    isDev,
-    backgroundColor: '#0b1020',
-  });
-  mainWindow.webContents.on('render-process-gone', (_event, details) => {
-    debugLog('A', 'electron/main.cjs:webContents:render-process-gone', 'Renderer process gone', details);
-  });
-  mainWindow.webContents.on('did-fail-load', (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
-    debugLog('A', 'electron/main.cjs:webContents:did-fail-load', 'Renderer failed to load', {
-      errorCode,
-      errorDescription,
-      validatedURL,
-      isMainFrame,
-    });
-  });
-  mainWindow.on('unresponsive', () => {
-    debugLog('A', 'electron/main.cjs:window:unresponsive', 'Window became unresponsive');
-  });
-  // #endregion
-
   if (isDev) {
     await mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
@@ -79,13 +44,6 @@ async function createWindow() {
 }
 
 function registerIpcHandlers() {
-  ipcMain.handle('debug:log', async (_event, payload) => {
-    // #region agent log
-    debugLog(payload?.hypothesisId || 'A', 'electron/main.cjs:ipc:debug:log', payload?.message || 'Renderer debug log', payload?.data || {});
-    // #endregion
-    return { ok: true };
-  });
-
   ipcMain.handle('data:load', async (_event, searchTerm = '') => ({
     projects: database.loadHierarchy(searchTerm),
     storage: {
@@ -138,12 +96,6 @@ function registerIpcHandlers() {
   });
 
   ipcMain.handle('versions:export', async (_event, { versionId, format }) => {
-    // #region agent log
-    debugLog('B', 'electron/main.cjs:ipc:versions:export', 'Export requested', {
-      versionId,
-      format,
-    });
-    // #endregion
     if (format === 'folder') {
       const directoryResult = await dialog.showOpenDialog(mainWindow, {
         title: '选择导出目录',
@@ -159,13 +111,6 @@ function registerIpcHandlers() {
         format,
         destinationPath: directoryResult.filePaths[0],
       });
-
-      // #region agent log
-      debugLog('B', 'electron/main.cjs:ipc:versions:export', 'Folder export completed', {
-        versionId,
-        exportPath,
-      });
-      // #endregion
 
       return { cancelled: false, exportPath };
     }
@@ -188,22 +133,8 @@ function registerIpcHandlers() {
         destinationPath: saveResult.filePath,
       });
 
-      // #region agent log
-      debugLog('B', 'electron/main.cjs:ipc:versions:export', 'Zip export completed', {
-        versionId,
-        exportPath,
-      });
-      // #endregion
-
       return { cancelled: false, exportPath };
     } catch (error) {
-      // #region agent log
-      debugLog('B', 'electron/main.cjs:ipc:versions:export', 'Zip export failed', {
-        versionId,
-        destinationPath: saveResult.filePath,
-        error: error instanceof Error ? error.message : String(error),
-      });
-      // #endregion
       throw error;
     }
   });
@@ -245,11 +176,6 @@ async function bootstrap() {
 }
 
 app.whenReady().then(async () => {
-  // #region agent log
-  app.on('child-process-gone', (_event, details) => {
-    debugLog('A', 'electron/main.cjs:app:child-process-gone', 'Electron child process gone', details);
-  });
-  // #endregion
   await bootstrap();
 
   app.on('activate', async () => {

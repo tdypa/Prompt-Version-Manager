@@ -23,6 +23,8 @@ npm install
 npm run dev
 ```
 
+安装依赖后会自动执行 `electron-rebuild`，确保 `better-sqlite3` 等原生模块与当前 Electron 版本匹配。
+
 ## 构建前端资源
 
 ```bash
