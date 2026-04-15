@@ -1,0 +1,16 @@
+export type {
+  AttachmentKind,
+  AttachmentRecord,
+  AttachmentRecord as Attachment,
+  CreateVersionInput,
+  ExportMode,
+  PromptSetInput,
+  PromptSetInput as CreatePromptSetInput,
+  PromptSetRecord,
+  PromptSetRecord as PromptSetWithTags,
+  PromptSetUpdateInput,
+  PromptSetUpdateInput as UpdatePromptSetInput,
+  PromptVersionRecord,
+  UpdateVersionInput,
+  VersionWithAttachments,
+} from "../shared/types";
