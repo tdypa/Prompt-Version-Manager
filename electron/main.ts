@@ -38,9 +38,9 @@ function resolveAttachmentKind(filePath: string): AttachmentKind {
 
 function getRendererUrl(): string {
   if (isDev) {
-    return "http://127.0.0.1:5173";
+    return "http://localhost:5173";
   }
-  return `file://${path.join(__dirname, "../dist/renderer/index.html")}`;
+  return `file://${path.join(__dirname, "../dist/index.html")}`;
 }
 
 async function createWindow(): Promise<void> {
